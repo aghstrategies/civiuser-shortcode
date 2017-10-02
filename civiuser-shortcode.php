@@ -16,7 +16,7 @@ add_filter('widget_text', 'do_shortcode');
 function civiuser_process_shortcode($attributes, $content = NULL) {
   // look up logged in contacts ID
   $userId = CRM_Core_Session::singleton()->getLoggedInContactID();
-  $userDiv = '<a href="<?php echo wp_login_url( get_permalink() ); ?>" title="Login">Login</a>';
+  $userDiv = "Please <a href='" . wp_login_url(get_permalink()) . "' title='Login'>Login</a> to view this content";
   if (!empty($userId)) {
     // get info of logged in contact thru the api
     try {
@@ -43,6 +43,7 @@ function civiuser_process_shortcode($attributes, $content = NULL) {
       <div>{$contactInfo['city']} {$contactInfo['state_province_name']}</div> <div>{$contactInfo['postal_code']}</div>
       <div>{$contactInfo['phone']}</div>
       <div>{$contactInfo['email']}</div>
+      <a href='" . get_permalink() . "/update-contact-information/'>Update</a>
     </div>";
   }
   // print that div
