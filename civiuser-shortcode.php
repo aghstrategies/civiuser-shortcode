@@ -11,6 +11,7 @@
 
 add_shortcode('civiuser_shortcode', 'civiuser_process_shortcode');
 civicrm_initialize();
+add_filter('widget_text','do_shortcode');
 
 function civiuser_process_shortcode($attributes, $content = NULL) {
   // look up logged in contacts ID
@@ -43,5 +44,5 @@ function civiuser_process_shortcode($attributes, $content = NULL) {
   </div>";
 
   // print that div
-  echo "$userDiv";
+  return "$userDiv";
 }
