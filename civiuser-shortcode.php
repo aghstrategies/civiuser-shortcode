@@ -15,13 +15,15 @@ add_filter('widget_text', 'do_shortcode');
 
 function civiuser_process_shortcode($attributes, $content = NULL) {
   // look up logged in contacts ID
-  $userId = CRM_Core_Session::singleton()->getLoggedInContactID();
+  $ufId = wp_get_current_user();
   $userDiv = "Please <a href='" . wp_login_url(get_permalink()) . "' title='Login'>Login</a> to view this content";
-  if (!empty($userId)) {
+  if (!empty($ufId->ID)) {
     // get info of logged in contact thru the api
     try {
-      $contactInfo = civicrm_api3('Contact', 'getsingle', array(
-        'id' => $userId,
+      $contactInfo = civicrm_api3('UFMatch', 'getsingle', array(
+        'sequential' => 1,
+        'uf_id' => $ufId->ID,
+        'api.Contact.getsingle' => array('id' => "\$value.contact_id"),
       ));
     }
     catch (CiviCRM_API3_Exception $e) {
@@ -31,21 +33,27 @@ function civiuser_process_shortcode($attributes, $content = NULL) {
         1 => $error,
       )));
     }
-    // get url to update the page
-    $updateUrl = site_url('/update-contact-information/', 'https');
-    // Create div of logged in contact's information
-    $userDiv = "
-    <div class='civiuser'>
-      <div>{$contactInfo['first_name']} {$contactInfo['last_name']}</div>
-      <div>{$contactInfo['street_address']}</div>
-      <div>{$contactInfo['supplemental_address_1']}</div>
-      <div>{$contactInfo['supplemental_address_2']}</div>
-      <div>{$contactInfo['supplemental_address_3']}</div>
-      <div>{$contactInfo['city']} {$contactInfo['state_province_name']}</div> <div>{$contactInfo['postal_code']}</div>
-      <div>{$contactInfo['phone']}</div>
-      <div>{$contactInfo['email']}</div>
-      <a href='$updateUrl'>Update</a>
-    </div>";
+    if (!empty($contactInfo['api.Contact.getsingle'])) {
+      $contactInfo = $contactInfo['api.Contact.getsingle'];
+      // get url to update the page
+      $updateUrl = site_url('/update-contact-information/', 'https');
+      // Create div of logged in contact's information
+      $userDiv = "
+      <div class='civiuser'>
+        <div>{$contactInfo['first_name']} {$contactInfo['last_name']}</div>
+        <div>{$contactInfo['street_address']}</div>
+        <div>{$contactInfo['supplemental_address_1']}</div>
+        <div>{$contactInfo['supplemental_address_2']}</div>
+        <div>{$contactInfo['supplemental_address_3']}</div>
+        <div>{$contactInfo['city']} {$contactInfo['state_province_name']}</div> <div>{$contactInfo['postal_code']}</div>
+        <div>{$contactInfo['phone']}</div>
+        <div>{$contactInfo['email']}</div>
+        <a href='$updateUrl'>Update</a>
+      </div>";
+    }
+    else {
+      $userDiv = "Error loading contct please contact system admin";
+    }
   }
   // print that div
   return "$userDiv";
