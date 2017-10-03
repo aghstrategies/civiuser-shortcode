@@ -14,9 +14,11 @@ civicrm_initialize();
 add_filter('widget_text', 'do_shortcode');
 
 function civiuser_process_shortcode($attributes, $content = NULL) {
-  // look up logged in contacts ID
-  $ufId = wp_get_current_user();
+  // set message for if not logged in
   $userDiv = "Please <a href='" . wp_login_url(get_permalink()) . "' title='Login'>Login</a> to view this content";
+  // get wordpress user id
+  $ufId = wp_get_current_user();
+  // if the user is logged in look up their civicrm contact info thru the api
   if (!empty($ufId->ID)) {
     // get info of logged in contact thru the api
     try {
@@ -33,6 +35,7 @@ function civiuser_process_shortcode($attributes, $content = NULL) {
         1 => $error,
       )));
     }
+    // if civi contact found print info and update link
     if (!empty($contactInfo['api.Contact.getsingle'])) {
       $contactInfo = $contactInfo['api.Contact.getsingle'];
       // get url to update the page
@@ -51,8 +54,9 @@ function civiuser_process_shortcode($attributes, $content = NULL) {
         <a href='$updateUrl'>Update</a>
       </div>";
     }
+    // if no civi user found print error message (there should always be a linked civi user)
     else {
-      $userDiv = "Error loading contct please contact system admin";
+      $userDiv = "Error: No civicrm contact was found to be associated with your wordpress user please contact your system admin";
     }
   }
   // print that div
