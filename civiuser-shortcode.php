@@ -31,7 +31,8 @@ function civiuser_process_shortcode($attributes, $content = NULL) {
         1 => $error,
       )));
     }
-
+    // get url to update the page
+    $updateUrl = site_url('/update-contact-information/', 'https');
     // Create div of logged in contact's information
     $userDiv = "
     <div class='civiuser'>
@@ -43,7 +44,7 @@ function civiuser_process_shortcode($attributes, $content = NULL) {
       <div>{$contactInfo['city']} {$contactInfo['state_province_name']}</div> <div>{$contactInfo['postal_code']}</div>
       <div>{$contactInfo['phone']}</div>
       <div>{$contactInfo['email']}</div>
-      <a href='" . get_permalink() . "/update-contact-information/'>Update</a>
+      <a href='$updateUrl'>Update</a>
     </div>";
   }
   // print that div
