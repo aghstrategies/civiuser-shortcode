@@ -39,7 +39,7 @@ function civiuser_process_shortcode($attributes, $content = NULL) {
     if (!empty($contactInfo['api.Contact.getsingle'])) {
       $contactInfo = $contactInfo['api.Contact.getsingle'];
       // get url to update the page
-      $updateUrl = site_url('/update-contact-information/', 'https');
+      $updateUrl = site_url('/update-contact-information/');
       // Create div of logged in contact's information
       $userDiv = "
       <div class='civiuser'>
