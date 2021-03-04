@@ -10,10 +10,11 @@
  */
 
 add_shortcode('civiuser_shortcode', 'civiuser_process_shortcode');
-civicrm_initialize();
 add_filter('widget_text', 'do_shortcode');
 
 function civiuser_process_shortcode($attributes, $content = NULL) {
+  civicrm_initialize();
+
   // set message for if not logged in
   $userDiv = "Please <a href='" . wp_login_url(get_permalink()) . "' title='Login'>Login</a> to view this content";
   // get wordpress user id
