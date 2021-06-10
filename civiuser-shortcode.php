@@ -64,3 +64,21 @@ civicrm_initialize();
   // print that div
   return "$userDiv";
 }
+
+/*AGH #26262 fix page titles for CiviCRM pages */
+function wpse83525_filter_the_title( $title ) {
+        if ( is_page( 'civicrm' ) && $title == "Donate Now") {
+                        global $post;
+
+        return $post->post_title;
+    }
+    return $title;
+}
+add_filter( 'the_title', 'wpse83525_filter_the_title' );
+
+add_filter('wpseo_title', 'custom_titles', 10, 1);
+function custom_titles() {
+  global $wp;
+  $current_slug = $wp->request;
+}
+
